@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXA · El futuro de tu vida académica</title>
+<meta name="description" content="NEXA organiza tu semestre completo: materias, tareas, evaluaciones y calificaciones en una sola app. Disponible sin conexión, protegida y potenciada por inteligencia artificial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070F; --bg2:#080D1C; --panel:rgba(16,24,48,.55); --panel2:rgba(22,32,64,.75);
+  --line:rgba(120,160,255,.14); --txt:#E9EFFC; --muted:#8A9CC4; --muted2:#6E80A8;
+  --cyan:#28E0F0; --violet:#8B5CF6; --blue:#4D8BFF; --pink:#F056B0;
+  --grad:linear-gradient(120deg,#28E0F0,#4D8BFF 45%,#8B5CF6);
+  --grad2:linear-gradient(100deg,#8B5CF6,#F056B0);
+  --sh:0 26px 70px rgba(0,0,0,.5);
+  --glow:0 0 60px rgba(77,139,255,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.grotesk{font-family:'Space Grotesk',sans-serif}
+.mono{font-family:'JetBrains Mono',monospace}
+::selection{background:var(--cyan);color:#040810}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#04060C}
+::-webkit-scrollbar-thumb{background:var(--grad);border-radius:10px}
+
+#net{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(77,139,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(77,139,255,.045) 1px,transparent 1px);
+  background-size:70px 70px;mask-image:radial-gradient(circle at 50% 35%,#000 5%,transparent 80%)}
+.orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0}
+.o1{width:620px;height:620px;background:rgba(40,224,240,.16);top:-220px;right:-160px}
+.o2{width:560px;height:560px;background:rgba(139,92,246,.18);bottom:-240px;left:-180px}
+.o3{width:420px;height:420px;background:rgba(240,86,176,.1);top:44%;left:38%}
+
+#bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;background:var(--grad)}
+#cur{position:fixed;width:9px;height:9px;border-radius:50%;background:var(--cyan);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s;mix-blend-mode:screen}
+#cur.o{width:44px;height:44px;background:rgba(40,224,240,.14);border:1px solid rgba(40,224,240,.55)}
+@media(hover:none){#cur{display:none}}
+
+.veil{position:fixed;inset:0;z-index:9998;display:grid;place-items:center;background:var(--bg);transition:opacity .9s,visibility .9s}
+.veil b{font-family:'Space Grotesk';font-size:clamp(2.6rem,9vw,6rem);font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.42em;padding-left:.42em;animation:breathe 2s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+.veil.out{opacity:0;visibility:hidden}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;transition:.4s}
+.nav.on{background:rgba(5,7,15,.85);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
+.nin{max-width:1280px;margin:0 auto;padding:16px 38px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.logo .mk{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:1.3rem;box-shadow:0 10px 26px rgba(77,139,255,.45);color:#040810}
+.logo b{font-family:'Space Grotesk';font-size:1.3rem;font-weight:700;letter-spacing:.03em}
+.logo small{display:block;font-family:'JetBrains Mono';font-size:.54rem;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+.nav nav{display:flex;gap:28px;align-items:center}
+.nav nav a{text-decoration:none;color:var(--muted);font-size:.84rem;font-weight:500;transition:.3s;position:relative}
+.nav nav a::after{content:'';position:absolute;left:0;right:0;bottom:-5px;height:1.5px;background:var(--grad);transform:scaleX(0);transition:.4s;transform-origin:left}
+.nav nav a:hover{color:#fff}
+.nav nav a:hover::after{transform:scaleX(1)}
+.cta{background:var(--grad);color:#040810!important;padding:11px 24px;border-radius:10px;font-weight:700;box-shadow:0 12px 30px rgba(77,139,255,.32);transition:.4s}
+.cta::after{display:none!important}
+.cta:hover{transform:translateY(-2px);box-shadow:0 20px 44px rgba(40,224,240,.42)}
+
+.hero{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;padding:140px 38px 80px;max-width:1280px;margin:0 auto}
+.hgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;width:100%}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono';font-size:.66rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--cyan);padding:10px 20px;border:1px solid rgba(40,224,240,.3);border-radius:999px;background:rgba(40,224,240,.05);margin-bottom:28px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(40,224,240,.25)}50%{box-shadow:0 0 0 10px rgba(40,224,240,0)}}
+.hero h1{font-family:'Space Grotesk';font-size:clamp(2.6rem,6.6vw,5.2rem);font-weight:700;line-height:1.03;letter-spacing:-.03em;color:#fff}
+.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:clamp(1rem,1.8vw,1.22rem);color:var(--muted);margin-top:26px;max-width:54ch;font-weight:300}
+.hacts{display:flex;gap:15px;flex-wrap:wrap;margin-top:38px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 34px;border-radius:11px;font-weight:600;font-size:.94rem;text-decoration:none;transition:.4s;border:0;cursor:pointer;font-family:'Inter'}
+.btn-g{background:var(--grad);color:#040810;box-shadow:0 16px 40px rgba(77,139,255,.34)}
+.btn-g:hover{transform:translateY(-3px);box-shadow:0 26px 60px rgba(40,224,240,.5)}
+.btn-gh{background:rgba(255,255,255,.03);color:var(--txt);border:1px solid var(--line);backdrop-filter:blur(10px)}
+.btn-gh:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px)}
+
+.phone-wrap{perspective:1400px;display:grid;place-items:center}
+.phone{width:290px;height:590px;border-radius:40px;background:linear-gradient(160deg,#0C1428,#070B18);border:1px solid rgba(120,160,255,.2);box-shadow:var(--sh),var(--glow);padding:16px;position:relative;transform-style:preserve-3d;transition:.5s}
+.phone::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:90px;height:8px;border-radius:8px;background:rgba(120,160,255,.18)}
+.scr{width:100%;height:100%;border-radius:28px;background:#060A16;overflow:hidden;padding:38px 18px 18px;display:flex;flex-direction:column;gap:12px}
+.scr .hd{font-family:'Space Grotesk';font-size:1.05rem;font-weight:600;color:#fff}
+.scr .hd span{color:var(--cyan);font-family:'JetBrains Mono';font-size:.58rem;display:block;letter-spacing:.16em;text-transform:uppercase;margin-top:4px}
+.mini{background:rgba(77,139,255,.08);border:1px solid var(--line);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:11px;animation:slide .6s backwards}
+.mini:nth-child(2){animation-delay:.1s}.mini:nth-child(3){animation-delay:.2s}.mini:nth-child(4){animation-delay:.3s}.mini:nth-child(5){animation-delay:.4s}
+@keyframes slide{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.mini .dotc{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.mini .tx{font-size:.72rem;color:#B8C6E4}
+.mini .tx b{display:block;color:#fff;font-size:.78rem;font-weight:600}
+.mini .st{margin-left:auto;font-family:'JetBrains Mono';font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:5px}
+.s-ok{background:rgba(40,224,240,.15);color:var(--cyan)}
+.s-wi{background:rgba(240,86,176,.14);color:var(--pink)}
+.s-ac{background:rgba(139,92,246,.16);color:#B79CFF}
+
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(8,13,28,.55);overflow:hidden;position:relative;z-index:3;padding:20px 0}
+.strip-in{display:flex;gap:56px;white-space:nowrap;animation:strip 32s linear infinite;width:max-content}
+.strip-in span{font-family:'Space Grotesk';font-size:.98rem;color:var(--muted);display:flex;align-items:center;gap:56px}
+.strip-in span::after{content:'◆';color:var(--cyan);font-size:.6rem}
+@keyframes strip{to{transform:translateX(-50%)}}
+
+section{position:relative;z-index:3;max-width:1280px;margin:0 auto;padding:104px 38px}
+.head{margin-bottom:52px;max-width:800px}
+.head .tag{font-family:'JetBrains Mono';font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+.head h2{font-family:'Space Grotesk';font-size:clamp(2rem,4.4vw,3.3rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin:14px 0 18px;color:#fff}
+.head h2 em{font-style:normal;background:var(--grad2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.head p{color:var(--muted);font-size:1.04rem;font-weight:300}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+.prose p{color:var(--muted);font-size:1.02rem;font-weight:300}
+.prose p+p{margin-top:16px}
+.prose strong{color:#D6E0F5;font-weight:600}
+.prose .hl{color:var(--cyan);font-weight:600}
+.quote{border-left:2px solid;border-image:var(--grad) 1;padding:6px 0 6px 22px;margin-top:22px;font-family:'Space Grotesk';font-size:1.15rem;font-style:italic;color:#C2CEEC}
+
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.hcard{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:32px 28px;transition:.5s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;transform-style:preserve-3d}
+.hcard::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(77,139,255,.14),transparent 60%);opacity:0;transition:.5s}
+.hcard:hover::before{opacity:1}
+.hcard:hover{border-color:rgba(40,224,240,.4);box-shadow:var(--sh);transform:translateY(-6px)}
+.hcard .ic{width:54px;height:54px;border-radius:15px;background:rgba(77,139,255,.14);border:1px solid rgba(77,139,255,.3);display:grid;place-items:center;font-size:1.5rem;margin-bottom:18px;position:relative}
+.hcard h4{font-family:'Space Grotesk';font-size:1.24rem;font-weight:600;color:#fff;margin-bottom:10px;position:relative}
+.hcard p{color:var(--muted2);font-size:.92rem;font-weight:300;position:relative}
+
+.integra{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.icell{background:rgba(8,13,28,.75);padding:34px 26px;transition:.4s}
+.icell:hover{background:rgba(77,139,255,.1)}
+.icell .n{font-family:'JetBrains Mono';font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:700}
+.icell h4{font-family:'Space Grotesk';font-size:1.1rem;font-weight:600;color:#fff;margin:10px 0 8px}
+.icell p{color:var(--muted2);font-size:.86rem;font-weight:300}
+
+.acc{margin-top:8px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}
+.acc-i{border-bottom:1px solid var(--line)}
+.acc-i:last-child{border:0}
+.acc-h{width:100%;background:none;border:0;text-align:left;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:pointer;color:#D6E0F5;font-family:'Space Grotesk';font-size:1.12rem;font-weight:600;transition:.3s}
+.acc-h:hover{background:rgba(77,139,255,.08);color:#fff}
+.acc-h .pl{width:26px;height:26px;flex:0 0 26px;border:1px solid rgba(40,224,240,.45);border-radius:7px;display:grid;place-items:center;color:var(--cyan);transition:.4s;font-size:1rem}
+.acc-i.open .pl{transform:rotate(45deg);background:var(--grad);color:#040810;border-color:transparent}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .5s ease;color:var(--muted2)}
+.acc-i.open .acc-b{max-height:300px}
+.acc-b p{padding:0 28px 26px;font-size:.93rem;font-weight:300}
+
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+.fcell{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:34px 28px;text-align:center;transition:.5s}
+.fcell:hover{transform:translateY(-8px);border-color:rgba(139,92,246,.45);box-shadow:var(--sh)}
+.fcell .big{font-family:'Space Grotesk';font-size:2.6rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.fcell .lb{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);margin-top:12px;font-weight:600}
+
+.close{text-align:center;background:linear-gradient(160deg,var(--panel2),var(--bg2));border:1px solid var(--line);border-radius:26px;padding:76px 42px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.close::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 50% 0%,rgba(77,139,255,.2),transparent 60%)}
+.close *{position:relative;z-index:2}
+.close h2{font-family:'Space Grotesk';font-size:clamp(1.9rem,4vw,2.9rem);font-weight:700;color:#fff}
+.close h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.close p{color:var(--muted);max-width:620px;margin:18px auto 0;font-weight:300}
+.pill{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:32px}
+.pill span{font-family:'JetBrains Mono';font-size:.76rem;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px 18px;transition:.35s}
+.pill span:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px)}
+
+footer{background:#03050B;border-top:1px solid var(--line);padding:60px 38px 28px;position:relative;z-index:3}
+.fd{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.fd b{font-family:'Space Grotesk';font-size:1.3rem;color:#fff}
+.fd p{font-size:.85rem;color:var(--muted2);margin-top:8px;font-weight:300}
+.fd .r{text-align:right;font-size:.82rem;color:var(--muted2)}
+
+.reveal{opacity:0;transform:translateY(44px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#net{display:none}}
+@media(max-width:1000px){
+  .hgrid,.two{grid-template-columns:1fr;gap:44px}
+  .nav nav{display:none}
+  .feat{grid-template-columns:1fr}
+  .phone{width:250px;height:520px}
+  .fd .r{text-align:left}
+}
+</style>
+</head>
+<body>
+<canvas id="net"></canvas>
+<div class="grid-bg"></div>
+<div id="bar"></div>
+<div id="cur"></div>
+<div class="veil" id="veil"><b>NEXA</b></div>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<header class="nav" id="nav">
+  <div class="nin">
+    <a class="logo" href="#top"><div class="mk">N</div><div><b>NEXA</b><small>Asistente académico</small></div></a>
+    <nav>
+      <a href="#quees">¿Qué es?</a>
+      <a href="#ayuda">En qué te ayuda</a>
+      <a href="#integra">Qué integraremos</a>
+      <a href="#porque">Por qué NEXA</a>
+      <a class="cta" href="#quees">Descubrir</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hgrid">
+    <div class="reveal">
+      <span class="eyebrow"><span class="dot"></span>El próximo estándar académico</span>
+      <h1>Tu semestre completo,<br><em>bajo control total</em></h1>
+      <p class="sub">NEXA reúne materias, tareas, evaluaciones y calificaciones en una sola experiencia inteligente. Anticipa cada entrega, olvídate del caos y estudia con estrategia, no con memoria.</p>
+      <div class="hacts">
+        <a class="btn btn-g" href="#ayuda">¿En qué te ayuda?</a>
+        <a class="btn btn-gh" href="#integra">Qué integraremos</a>
+      </div>
+    </div>
+    <div class="phone-wrap reveal">
+      <div class="phone" data-tilt>
+        <div class="scr">
+          <div class="hd">Hoy<span>Miércoles · 21 de octubre</span></div>
+          <div class="mini"><span class="dotc" style="background:#28E0F0"></span><span class="tx"><b>Materia</b>Fundamentos de Redes</span><span class="st s-ok">Activa</span></div>
+          <div class="mini"><span class="dotc" style="background:#F056B0"></span><span class="tx"><b>Entrega</b>Práctica — vence hoy</span><span class="st s-wi">Urgente</span></div>
+          <div class="mini"><span class="dotc" style="background:#8B5CF6"></span><span class="tx"><b>Evaluación</b>Examen de Unidad 3</span><span class="st s-ac">Próxima</span></div>
+          <div class="mini"><span class="dotc" style="background:#4D8BFF"></span><span class="tx"><b>Progreso</b>Promedio general</span><span class="st s-ok">Continuo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip"><div class="strip-in">
+  <span>Sin conexión también funciona</span><span>Protegido con tu identidad</span><span>Inteligencia artificial</span><span>Organización automática</span><span>Tu información, privada</span>
+  <span>Sin conexión también funciona</span><span>Protegido con tu identidad</span><span>Inteligencia artificial</span><span>Organización automática</span><span>Tu información, privada</span>
+</div></div>
+
+<section id="quees">
+  <div class="head reveal">
+    <div class="tag">01 · ¿Qué es NEXA?</div>
+    <h2>Una sola app para <em>toda tu vida escolar</em></h2>
+  </div>
+  <div class="two">
+    <div class="prose reveal">
+      <p><strong>NEXA</strong> es un asistente académico digital que concentra todo lo que hoy vive disperso entre capturas, notas del celular, grupos de chat y recordatorios que nunca llegan.</p>
+      <p>Cada materia se organiza con sus tareas, sus evaluaciones y sus recursos. El calendario anticipa cada vencimiento y tu rendimiento deja de ser una sorpresa hasta el día del examen. El resultado es simple: <span class="hl">control, anticipación y tranquilidad</span> durante todo el semestre.</p>
+      <div class="quote grotesk">"La información existe. El problema es que está dispersa, y lo disperso se olvida."</div>
+    </div>
+    <div class="reveal">
+      <div class="acc">
+        <div class="acc-i open"><button class="acc-h">¿Para quién es? <span class="pl">+</span></button><div class="acc-b"><p>Para cualquier estudiante que quiera dejar de improvisar: ordena su carga académica, visualiza lo que viene y llega preparado a cada entrega y examen.</p></div></div>
+        <div class="acc-i"><button class="acc-h">¿En qué se diferencia? <span class="pl">+</span></button><div class="acc-b"><p>No es una agenda más. NEXA piensa por ti: organiza, anticipa y te orienta con inteligencia artificial, todo dentro de una app ligera, rápida y pensada para el estudiante real.</p></div></div>
+        <div class="acc-i"><button class="acc-h">¿Y si no tengo internet? <span class="pl">+</span></button><div class="acc-b"><p>Sigue funcionando. NEXA está diseñada para trabajar sin conexión y sincronizarse cuando la recuperes. Tu información no se detiene ni se pierde.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ayuda">
+  <div class="head reveal">
+    <div class="tag">02 · En qué te ayuda</div>
+    <h2>Menos caos, <em>más enfoque</em></h2>
+    <p>NEXA ataca directo los problemas que todos los estudiantes viven cada semana.</p>
+  </div>
+  <div class="help">
+    <div class="hcard reveal"><div class="ic">🗂️</div><h4>Todo en su lugar</h4><p>Materias, tareas, recursos y fechas conviven en un solo espacio ordenado. Nunca más una entrega perdida entre el ruido.</p></div>
+    <div class="hcard reveal"><div class="ic">⏰</div><h4>Nunca más un olvido</h4><p>Cada vencimiento se anticipa y se te recuerda a tiempo, para que llegues con margen y sin carreras de última hora.</p></div>
+    <div class="hcard reveal"><div class="ic">📊</div><h4>Ve tu avance real</h4><p>Tu progreso y tu rendimiento se muestran claros, para que sepas dónde estás parado antes de que sea tarde.</p></div>
+    <div class="hcard reveal"><div class="ic">🤖</div><h4>Un asistente que te orienta</h4><p>Inteligencia artificial que resume, detecta fechas y te arma planes de estudio sin que se lo pidas dos veces.</p></div>
+    <div class="hcard reveal"><div class="ic">🔒</div><h4>Tu información, protegida</h4><p>Lo sensible queda bajo llave y solo tú entras. Privacidad de verdad, no una promesa.</p></div>
+    <div class="hcard reveal"><div class="ic">📶</div><h4>Trabaja donde estés</h4><p>En el aula, en el camión o sin señal: NEXA sigue disponible y no te deja a medias.</p></div>
+  </div>
+</section>
+
+<section id="integra">
+  <div class="head reveal">
+    <div class="tag">03 · Qué integraremos</div>
+    <h2>Un sistema que <em>crece contigo</em></h2>
+    <p>NEXA se construye por etapas. Estas son las capacidades que iremos incorporando hasta convertirla en una plataforma académica completa.</p>
+  </div>
+  <div class="integra reveal">
+    <div class="icell"><div class="n">Módulo 01</div><h4>Gestión de materias</h4><p>Horarios, docentes, unidades y materiales de cada asignatura en un solo lugar.</p></div>
+    <div class="icell"><div class="n">Módulo 02</div><h4>Tareas y entregas</h4><p>Estados, prioridades y recordatorios para que nada se quede en el tintero.</p></div>
+    <div class="icell"><div class="n">Módulo 03</div><h4>Calendario inteligente</h4><p>Vistas claras del mes y la semana, con detección automática de fechas clave.</p></div>
+    <div class="icell"><div class="n">Módulo 04</div><h4>Modo sin conexión</h4><p>Tu información disponible siempre, con sincronización automática al volver la señal.</p></div>
+    <div class="icell"><div class="n">Módulo 05</div><h4>Bóveda protegida</h4><p>Información sensible resguardada bajo tu identidad, con acceso solo para ti.</p></div>
+    <div class="icell"><div class="n">Módulo 06</div><h4>Asistente con IA</h4><p>Resúmenes, planes de estudio y detección de fechas al alcance de un toque.</p></div>
+  </div>
+  <div class="feat" style="margin-top:22px">
+    <div class="fcell reveal"><div class="big">1</div><div class="lb">App para todo el semestre</div></div>
+    <div class="fcell reveal"><div class="big">0</div><div class="lb">Entregas perdidas</div></div>
+    <div class="fcell reveal"><div class="big">∞</div><div class="lb">Materias organizables</div></div>
+  </div>
+</section>
+
+<section id="porque">
+  <div class="head reveal">
+    <div class="tag">04 · Por qué NEXA</div>
+    <h2>Diseñada para el estudiante <em>real</em></h2>
+    <p>Sin complicaciones, sin curvas de aprendizaje. Una app ligera y moderna que se siente natural desde el primer día y se adapta a como tú estudias.</p>
+  </div>
+  <div class="help">
+    <div class="hcard reveal"><div class="ic">⚡</div><h4>Rápida y ligera</h4><p>Se abre al instante y responde sin esperas. Pensada para acompañarte todo el día.</p></div>
+    <div class="hcard reveal"><div class="ic">🎯</div><h4>Simple de verdad</h4><p>Interfaz clara y moderna que se entiende a la primera. Sin manuales, sin fricción.</p></div>
+    <div class="hcard reveal"><div class="ic">🚀</div><h4>Preparada para el futuro</h4><p>Construida para crecer e integrar nuevas capacidades sin rehacerse desde cero.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="close reveal">
+    <h2>Esto es <em>NEXA</em></h2>
+    <p>El asistente académico que ordena tu semestre, anticipa tus entregas y te ayuda a rendir mejor. Lo que viene, se está construyendo ahora.</p>
+    <div class="pill">
+      <span>Organización total</span><span>Sin conexión</span><span>Inteligencia artificial</span><span>Privacidad</span><span>Hecho para estudiantes</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fd">
+    <div><b>NEXA</b><p>Asistente académico integral · Equipo 8</p><p>TESH · Semestre 5 · Grupo 3501</p></div>
+    <div class="r">© 2026 NEXA<br>Fundamentos de Ingeniería de Software</div>
+  </div>
+</footer>
+
+<script>
+addEventListener('load',function(){setTimeout(function(){document.getElementById('veil').classList.add('out');},500);});
+setTimeout(function(){var v=document.getElementById('veil');if(v)v.classList.add('out');},2600);
+
+var cur=document.getElementById('cur');
+addEventListener('mousemove',function(e){cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+document.querySelectorAll('a,button,.hcard,.icell,.fcell,[data-tilt]').forEach(function(el){
+  el.addEventListener('mouseenter',function(){cur.classList.add('o');});
+  el.addEventListener('mouseleave',function(){cur.classList.remove('o');});});
+
+var nav=document.getElementById('nav'),bar=document.getElementById('bar');
+addEventListener('scroll',function(){
+  nav.classList.toggle('on',scrollY>40);
+  bar.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';
+  document.querySelector('.o1').style.transform='translateY('+(scrollY*.05)+'px)';
+  document.querySelector('.o2').style.transform='translateY('+(-scrollY*.045)+'px)';});
+
+document.querySelectorAll('.acc-h').forEach(function(h){h.addEventListener('click',function(){
+  var it=h.parentElement,open=it.classList.contains('open');
+  document.querySelectorAll('.acc-i').forEach(function(x){x.classList.remove('open');});
+  if(!open)it.classList.add('open');});});
+
+document.querySelectorAll('[data-tilt]').forEach(function(el){
+  el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();
+    var px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+    el.style.transform='perspective(1100px) rotateY('+(px*10)+'deg) rotateX('+(-py*10)+'deg) translateY(-4px)';});
+  el.addEventListener('mouseleave',function(){el.style.transform='';});});
+
+var io=new IntersectionObserver(function(es){es.forEach(function(e){
+  if(!e.isIntersecting)return;e.target.classList.add('on');io.unobserve(e.target);});},{threshold:.14});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+var cv=document.getElementById('net'),ctx=cv.getContext('2d'),W,H,pts=[];
+function fit(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];
+  var n=Math.min(80,Math.floor(W/20));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});}
+fit();addEventListener('resize',fit);
+(function loop(){ctx.clearRect(0,0,W,H);
+  for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<135){ctx.beginPath();ctx.strokeStyle='rgba(77,139,255,'+(.16*(1-d/135))+')';ctx.lineWidth=.6;ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}
+    ctx.beginPath();ctx.fillStyle='rgba(40,224,240,.6)';ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fill();}
+  requestAnimationFrame(loop);})();
+</script>
+</body>
+</html>
